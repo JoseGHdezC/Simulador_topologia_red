@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador de Topologías de Red</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Three.js canvas mounts here -->
+    <div id="app"></div>
+
+    <!-- Left sidebar: topology selector -->
+    <nav id="topology-selector"></nav>
+    <!-- Toggle tab for left sidebar — sits just outside the right edge -->
+    <button id="toggle-left" class="panel-toggle panel-toggle-left" title="Mostrar / ocultar panel">‹</button>
+
+    <!-- Right panel: topology info + features -->
+    <aside id="topology-info"></aside>
+    <!-- Toggle tab for right panel — sits just outside the left edge -->
+    <button id="toggle-right" class="panel-toggle panel-toggle-right" title="Mostrar / ocultar panel">›</button>
+
+    <!-- Bottom-left: legend -->
+    <aside id="legend-panel">
+      <h3>Leyenda</h3>
+      <div id="legend"></div>
+    </aside>
+
+    <!-- Bottom-right: controls hint -->
+    <footer id="controls-hint">
+      🖱 Arrastrar: rotar &nbsp;|&nbsp; Scroll: zoom &nbsp;|&nbsp; Hover: info del nodo
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

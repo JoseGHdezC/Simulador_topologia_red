@@ -1,0 +1,385 @@
+/* ── Reset & base ─────────────────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  background: #0a1628;
+  color: #e0f7fa;
+}
+
+#app {
+  width: 100%;
+  height: 100vh;
+}
+
+/* ── Topology Selector Sidebar (left) ─────────────────────────────────────── */
+#topology-selector {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 220px;
+  background: rgba(8, 16, 28, 0.95);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(77, 208, 225, 0.25);
+  padding: 20px 12px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  /* Slide transition */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#topology-selector.collapsed {
+  transform: translateX(-220px);
+}
+
+#topology-selector h3 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #4dd0e1;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(77, 208, 225, 0.2);
+}
+
+.topo-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(77, 208, 225, 0.15);
+  border-radius: 8px;
+  color: #b0bec5;
+  cursor: pointer;
+  padding: 10px 12px;
+  text-align: left;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.topo-btn:hover {
+  background: rgba(77, 208, 225, 0.1);
+  border-color: rgba(77, 208, 225, 0.4);
+  color: #e0f7fa;
+}
+
+.topo-btn.active {
+  background: rgba(77, 208, 225, 0.18);
+  border-color: #4dd0e1;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(77, 208, 225, 0.25);
+}
+
+.topo-btn-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.topo-btn-sub {
+  font-size: 11px;
+  opacity: 0.65;
+  font-style: italic;
+}
+
+/* ── Topology Info Panel (right) ──────────────────────────────────────────── */
+#topology-info {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 320px;
+  background: rgba(8, 16, 28, 0.95);
+  backdrop-filter: blur(10px);
+  border-left: 1px solid rgba(77, 208, 225, 0.25);
+  padding: 20px 16px;
+  z-index: 20;
+  overflow-y: auto;
+  display: none;
+  /* Slide transition */
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* display:none is set by JS when first hidden; once shown we switch to block and use transform */
+#topology-info.visible {
+  display: block;
+}
+
+#topology-info.collapsed {
+  transform: translateX(320px);
+}
+
+.info-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #4dd0e1;
+  margin-bottom: 4px;
+}
+
+.info-subtitle {
+  font-size: 12px;
+  color: #81c784;
+  margin-bottom: 14px;
+  font-style: italic;
+}
+
+.info-description {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #90a4ae;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(77, 208, 225, 0.15);
+}
+
+/* ── Features Table ───────────────────────────────────────────────────────── */
+.features-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.features-table tr:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.features-table td {
+  padding: 6px 4px;
+  vertical-align: top;
+}
+
+.feat-label {
+  color: #b0bec5;
+  width: 42%;
+  font-weight: 600;
+  padding-right: 8px;
+}
+
+.feat-value {
+  color: #e0f7fa;
+}
+
+/* ── Legend Panel (bottom-left) ───────────────────────────────────────────── */
+#legend-panel {
+  position: fixed;
+  bottom: 20px;
+  left: 232px; /* sidebar width + gap — updated via JS when sidebar collapses */
+  background: rgba(8, 16, 28, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(77, 208, 225, 0.3);
+  border-radius: 10px;
+  padding: 12px 16px;
+  min-width: 180px;
+  z-index: 10;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#legend-panel h3 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #81c784;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(77, 208, 225, 0.2);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  font-size: 12px;
+  color: #b0bec5;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Controls Hint (bottom-right) ─────────────────────────────────────────── */
+#controls-hint {
+  position: fixed;
+  bottom: 20px;
+  right: 332px; /* info panel width + gap */
+  background: rgba(8, 16, 28, 0.88);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(77, 208, 225, 0.25);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: #607d8b;
+  z-index: 10;
+}
+
+/* ── Panel toggle buttons ─────────────────────────────────────────────────── */
+.panel-toggle {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 52px;
+  background: rgba(8, 16, 28, 0.95);
+  border: 1px solid rgba(77, 208, 225, 0.35);
+  color: #4dd0e1;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  padding: 0;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s, left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.panel-toggle:hover {
+  background: rgba(77, 208, 225, 0.25);
+  color: #ffffff;
+}
+
+/* Left toggle: anchored to the right edge of the left sidebar (220px) */
+.panel-toggle-left {
+  left: 220px;
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  transition: background 0.15s, color 0.15s,
+              left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* When sidebar is collapsed the tab slides to the screen edge */
+#topology-selector.collapsed ~ .panel-toggle-left {
+  left: 0;
+}
+
+/* Right toggle: anchored to the left edge of the right panel (viewport - 320px) */
+.panel-toggle-right {
+  right: 320px;
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  transition: background 0.15s, color 0.15s,
+              right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* When right panel is collapsed the tab slides to the screen edge */
+#topology-info.collapsed ~ .panel-toggle-right,
+#topology-info:not(.visible) ~ .panel-toggle-right {
+  right: 0;
+}
+
+/* ── Parameter form ───────────────────────────────────────────────────────── */
+.params-section {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(77, 208, 225, 0.15);
+}
+
+.params-section h3,
+.features-section h3 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #4dd0e1;
+  margin-bottom: 10px;
+}
+
+#params-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.param-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.param-label {
+  font-size: 11px;
+  color: #90a4ae;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.param-hint {
+  font-weight: 400;
+  color: #546e7a;
+  font-style: italic;
+}
+
+.param-input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(77, 208, 225, 0.25);
+  border-radius: 6px;
+  color: #e0f7fa;
+  font-size: 13px;
+  font-family: monospace;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  width: 100%;
+}
+
+.param-input:focus {
+  border-color: #4dd0e1;
+  background: rgba(77, 208, 225, 0.1);
+}
+
+/* Remove spinners from number inputs */
+.param-input[type='number']::-webkit-inner-spin-button,
+.param-input[type='number']::-webkit-outer-spin-button {
+  opacity: 0.4;
+}
+
+.rebuild-btn {
+  margin-top: 6px;
+  background: rgba(77, 208, 225, 0.15);
+  border: 1px solid #4dd0e1;
+  border-radius: 7px;
+  color: #4dd0e1;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  width: 100%;
+}
+
+.rebuild-btn:hover {
+  background: rgba(77, 208, 225, 0.3);
+  color: #ffffff;
+}
+
+.rebuild-btn:active {
+  background: rgba(77, 208, 225, 0.45);
+}
+
+/* ── Scrollbar styling ────────────────────────────────────────────────────── */
+#topology-selector::-webkit-scrollbar,
+#topology-info::-webkit-scrollbar {
+  width: 4px;
+}
+#topology-selector::-webkit-scrollbar-thumb,
+#topology-info::-webkit-scrollbar-thumb {
+  background: rgba(77, 208, 225, 0.3);
+  border-radius: 2px;
+}
