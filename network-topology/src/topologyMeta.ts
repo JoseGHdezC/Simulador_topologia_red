@@ -64,7 +64,7 @@ export interface TopologyMeta {
 // ─── Mesh ─────────────────────────────────────────────────────────────────────
 
 function meshFeatures(p: MeshParams): TopologyFeature[] {
-  const { n, k, m } = p
+  const { n, k, m } = p // n dimensions, k switches per dimension, m endpoints per switch
   const dims = Array.from({ length: n }, (_, i) => k[i] ?? k[k.length - 1] ?? 2)
   const totalSwitches = dims.reduce((a, b) => a * b, 1)
   const totalEndpoints = totalSwitches * m
@@ -97,7 +97,7 @@ function meshFeatures(p: MeshParams): TopologyFeature[] {
 // ─── Torus ────────────────────────────────────────────────────────────────────
 
 function torusFeatures(p: TorusParams): TopologyFeature[] {
-  const { n, k, m } = p
+  const { n, k, m } = p // n dimensions, k switches per dimension, m endpoints per switch
   const dims = Array.from({ length: n }, (_, i) => Math.max(2, k[i] ?? k[k.length - 1] ?? 2))
   const totalSwitches = dims.reduce((a, b) => a * b, 1)
   const totalEndpoints = totalSwitches * m
@@ -130,8 +130,8 @@ function torusFeatures(p: TorusParams): TopologyFeature[] {
 // ─── WK-Recursive ────────────────────────────────────────────────────────────
 
 function wkFeatures(p: WKParams): TopologyFeature[] {
-  const k = Math.max(2, p.k)
-  const l = Math.max(1, p.level)
+  const k = Math.max(2, p.k) // Clique size (number of nodes in the base clique)
+  const l = Math.max(1, p.level) // Number of recursive levels
   const totalNodes = Math.pow(k, l)
 
   // Recursive total link count: T(k,1) = k*(k-1)/2; T(k,l) = k*T(k,l-1) + k*(k-1)/2
@@ -178,8 +178,8 @@ function wkFeatures(p: WKParams): TopologyFeature[] {
 // ─── Fat Tree ─────────────────────────────────────────────────────────────────
 
 function fatTreeFeatures(p: FatTreeParams): TopologyFeature[] {
-  const k = Math.max(2, p.k)
-  const n = Math.max(2, p.n)
+  const k = Math.max(2, p.k) // Number of ports per switch
+  const n = Math.max(2, p.n) // Number of stages (levels) in the tree
   const leafSwitches = Math.pow(k, n - 1)
   // Total internal switches = k^0 + k^1 + ... + k^(n-1)
   const totalSwitches = Array.from({ length: n }, (_, i) => Math.pow(k, i)).reduce((a, b) => a + b, 0)
@@ -207,8 +207,8 @@ function fatTreeFeatures(p: FatTreeParams): TopologyFeature[] {
 // ─── Flattened Butterfly ─────────────────────────────────────────────────────
 
 function flatButterflyFeatures(p: FlatButterflyParams): TopologyFeature[] {
-  const pr = Math.max(2, p.p)
-  const q  = Math.max(2, p.q)
+  const pr = Math.max(2, p.p) // Rows
+  const q  = Math.max(2, p.q) // Columns
   const totalSwitches = pr * q
   const degree = (q - 1) + (pr - 1)
   const rowLinks = pr * (q * (q - 1)) / 2
@@ -246,7 +246,7 @@ function flatButterflyFeatures(p: FlatButterflyParams): TopologyFeature[] {
 // ─── Bus ─────────────────────────────────────────────────────────────────────
 
 function busFeatures(p: BusParams): TopologyFeature[] {
-  const n = Math.max(2, p.nodeCount)
+  const n = Math.max(2, p.nodeCount) // Number of nodes connected to the bus
   return [
     { label: 'Tipo',               value: 'Medio compartido' },
     { label: 'Nº de nodos',        value: `${n}` },

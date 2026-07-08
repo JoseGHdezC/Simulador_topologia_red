@@ -353,6 +353,8 @@ These are used by:
 
 ---
 
-## License
+## TODO:
+- Remove fog to see more of the topology
+- Implement curved links when displaying > 4D or avoid bad representations
+- Reduce clique relative distance
 
-MIT
