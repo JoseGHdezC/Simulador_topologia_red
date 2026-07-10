@@ -139,8 +139,8 @@ function projectTo3D(coords: number[], k: number[]): { x: number; y: number; z: 
 // visually distinct from the standard cyan links in dims 0–2.
 // Dim 0 (X), 1 (Z), 2 (Y) use the default active color.
 const DIM_COLORS: Record<number, number> = {
-  3: 0xff7043,  // deep orange
-  4: 0xab47bc,  // violet
+  3: 0xFF2E51,  // red-pink
+  4: 0xff7043,  // orange
 }
 
 // Arc height fraction applied to each higher dimension.
