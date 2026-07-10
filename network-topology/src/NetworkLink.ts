@@ -50,19 +50,19 @@ const TUBE_RADIAL = 5
 function buildCurve(
   src: THREE.Vector3,
   tgt: THREE.Vector3,
-  arc: number,
+  arc = 0,
   perpOffset = 0,
 ): THREE.CatmullRomCurve3 {
+
   const mid = src.clone().lerp(tgt, 0.5)
   const length = src.distanceTo(tgt)
 
-  if (Math.abs(arc) > 0.001 || Math.abs(perpOffset) > 0.001) {
-    // Always lift by |arc| * length so the tube clears the node plane
-    mid.y += length * Math.abs(arc)
+  // Positivo = arriba
+  // Negativo = abajo
+  mid.y += length * arc
 
-    // Compute a horizontal vector perpendicular to the link direction
+  if (Math.abs(perpOffset) > 0.001) {
     const dir = tgt.clone().sub(src).normalize()
-    // Perpendicular in XZ plane: rotate 90° around Y
     const perp = new THREE.Vector3(-dir.z, 0, dir.x)
     mid.addScaledVector(perp, perpOffset)
   }

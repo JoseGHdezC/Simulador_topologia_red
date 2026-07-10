@@ -11,7 +11,7 @@ import { TopologyId, AnyParams, getTopology } from './topologyMeta'
 
 const scene = new THREE.Scene()
 scene.background = new THREE.Color(0x0a1628)
-scene.fog = new THREE.FogExp2(0x0a1628, 0.028)
+scene.fog = new THREE.FogExp2(0x0a1628, 0.0005)
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 300)
 camera.position.set(0, 14, 26)
@@ -160,7 +160,9 @@ function buildLegend(): void {
     { color: '#81c784', label: 'Switch' },
     { color: '#ffb74d', label: 'Server' },
     { color: '#ce93d8', label: 'Client' },
-    { color: '#4dd0e1', label: 'Link' },
+    { color: '#4dd0e1', label: 'Enlace (dim. 0–2)' },
+    { color: '#ff7043', label: 'Enlace dim. 3' },
+    { color: '#ab47bc', label: 'Enlace dim. 4' },
   ]
   legend.innerHTML = items
     .map(i => `<div class="legend-item">

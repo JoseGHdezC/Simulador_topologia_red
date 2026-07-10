@@ -123,13 +123,30 @@ function projectTo3D(coords: number[], k: number[]): { x: number; y: number; z: 
   // Dimensions 3+ are visualised as additional offsets in x/z to avoid overlap
   if (n > 3) {
     for (let d = 3; d < n; d++) {
-      const spread = k.slice(0, d).reduce((a, b) => a * b, 1) * S * 1.3
-      if (d % 2 === 1) x += coords[d] * spread
-      else             z += coords[d] * spread
+      // Spread diagonally in the XZ plane, scaled by the product of all previous k[] sizes
+      const spread = k.slice(0, d).reduce((a, b) => a * b, 1) * S * 0.2
+      x += coords[d] * spread
+      z += coords[d] * spread
+      // Lift higher dimensions in Y so they are visually distinct from the flat grid
+      y += coords[d] * S * 2
     }
   }
 
   return { x, y, z }
+}
+
+// Colors per dimension for high-dimensional (≥ 3) links, so they are
+// visually distinct from the standard cyan links in dims 0–2.
+// Dim 0 (X), 1 (Z), 2 (Y) use the default active color.
+const DIM_COLORS: Record<number, number> = {
+  3: 0xff7043,  // deep orange
+  4: 0xab47bc,  // violet
+}
+
+// Arc height fraction applied to each higher dimension.
+// Increases with dimension index so links in different dims don't overlap.
+function dimArc(d: number): number {
+  return (d - 2) * 0.28  // d=3 → 0.28, d=4 → 0.56, …
 }
 
 // ─── MESH ─────────────────────────────────────────────────────────────────────
@@ -137,11 +154,12 @@ function projectTo3D(coords: number[], k: number[]): { x: number; y: number; z: 
 /**
  * k-ary n-mesh
  * Supports any number of dimensions n with per-dimension switch counts k[].
+ * Links in dimensions ≥ 3 are arced upward and color-coded so they are
+ * visually distinct from the flat grid links of dimensions 0–2.
  * Endpoint nodes (m per switch) are shown as 'client' spheres offset in Y.
  */
 export function generateMesh(params: MeshParams): TopologyData {
   const { n, k, m } = params
-  // Guard: ensure k has exactly n entries, fill missing ones with last value
   const dims = Array.from({ length: n }, (_, i) => clamp(k[i] ?? k[k.length - 1] ?? 2, 1, 16))
 
   const nodes: NodeConfig[] = []
@@ -159,7 +177,13 @@ export function generateMesh(params: MeshParams): TopologyData {
       if (coord[d] + 1 < dims[d]) {
         const neighbour = [...coord]
         neighbour[d]++
-        links.push({ sourceId: id, targetId: coordId(neighbour) })
+        const isHighDim = d >= 3
+        links.push({
+          sourceId: id,
+          targetId: coordId(neighbour),
+          arc:   isHighDim ? dimArc(d) : undefined,
+          color: isHighDim ? DIM_COLORS[d] ?? DIM_COLORS[3] : undefined,
+        })
       }
     }
 
@@ -236,9 +260,9 @@ export function generateTorus(params: TorusParams): TopologyData {
 
 // ─── WK-RECURSIVE ────────────────────────────────────────────────────────────
  
-const cliqueRadiusFactor = (k: number) => (k <= 3 ? 0.9 : 1.1)
-const groupRadiusFactor = (k: number) => (k <= 3 ? 3.0 : k <= 5 ? 4.2 : 5.5)
-const LEVEL_SHRINK = 2.6 // how much smaller each nested ring of groups is vs. its parent
+const cliqueRadiusFactor = (k: number) => (k <= 3 ? 0.5 : 0.6)
+const groupRadiusFactor = (k: number) => (k <= 3 ? 2.0 : k <= 5 ? 3.7 : 5.2)
+const LEVEL_SHRINK = 2.5 // how much smaller each nested ring of groups is vs. its parent
  
 interface WKBuildResult {
   nodes: NodeConfig[]

@@ -354,7 +354,7 @@ These are used by:
 ---
 
 ## TODO:
-- Remove fog to see more of the topology
-- Implement curved links when displaying > 4D or avoid bad representations
-- Reduce clique relative distance
+- [x] Remove fog to see more of the topology
+- [x] Implement curved links when displaying > 4D or avoid bad representations
+- [x] Reduce clique relative distance
 
